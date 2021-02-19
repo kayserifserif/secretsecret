@@ -1,0 +1,52 @@
+@font-face {
+  font-family: "Flow Circular";
+  src: url("/fonts/flow-circular.woff");
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  margin: 0;
+}
+
+p:first-child {
+  margin-top: 0;
+}
+
+p:last-child {
+  margin-bottom: 0;
+}
+
+.animated {
+  transition: 2s opacity;
+  opacity: 1;
+}
+
+.hidden {
+  opacity: 0;
+}
+
+header,
+footer {
+  padding: 2em;
+}
+
+main {
+  display: grid;
+  grid-template-columns: 50% 50%;
+  justify-items: center;
+}
+
+main > div {
+  padding: 5em;
+}
+
+.canvas {
+  display: block;
+  margin-top: 2em;
+}
