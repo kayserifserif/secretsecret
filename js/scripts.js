@@ -29,6 +29,13 @@ if (secret_imgs) {
   secret_imgs = [];
 }
 
+let clear__btn = document.getElementById('clear__btn');;
+clear__btn.addEventListener('click', () => {
+  secrets.innerHTML = '';
+  secret_imgs = [];
+  localStorage.clear();
+});
+
 const f = new FontFace('Flow Circular', 'url(/fonts/flow-circular.woff)');
 f.load().then(() => write__btn.addEventListener('click', startWriting));
 
@@ -145,9 +152,12 @@ function submitSecret() {
   let image = new Image();
   image.src = dataURL;
   image.classList.add('secret_img');
-  let style = `width: ${Math.floor(canvas.width * (Math.random() * 0.5 + 0.25))}px; ` +
-    `top: ${Math.floor(Math.random() * window.innerHeight)}px; ` +
-    `left: ${Math.floor(Math.random() * window.innerWidth)}px;`;
+  let scale = Math.random() * 0.5 + 0.25;
+  let scaledWidth = Math.floor(canvas.width * scale);
+  let scaledHeight = Math.floor(canvas.height * scale);
+  let style = `width: ${scaledWidth}px; ` +
+    `top: ${Math.floor(Math.random() * (window.innerHeight - scaledHeight) + scaledHeight)}px; ` +
+    `left: ${Math.floor(Math.random() * (window.innerWidth - scaledWidth) + scaledWidth)}px;`;
   image.style = style;
   secrets.appendChild(image);
   secret_imgs.push({
