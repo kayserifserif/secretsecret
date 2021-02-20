@@ -22,13 +22,8 @@ p:last-child {
   margin-bottom: 0;
 }
 
-.animated {
-  transition: 2s opacity;
-  opacity: 1;
-}
-
-.hidden {
-  opacity: 0;
+.button {
+  display: block;
 }
 
 header,
@@ -42,11 +37,22 @@ main {
   justify-items: center;
 }
 
-main > div {
+.write,
+.secret {
   padding: 5em;
 }
 
 .canvas {
   display: block;
   margin-top: 2em;
+}
+
+.secrets {
+  position: absolute;
+}
+
+.secret_img {
+  position: absolute;
+  opacity: 0.5;
+  z-index: -1;
 }
