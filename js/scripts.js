@@ -1,8 +1,10 @@
-const write__btn = document.getElementById('write__btn');
+const FADE_MS = 500;
+
+const write_btn = document.getElementById('write_btn');
 const write = document.getElementById('write');
 let textarea;
 
-let secret__btn;
+let secret_btn;
 const secret = document.getElementById('secret');
 let submit_btn;
 let canvas;
@@ -20,6 +22,7 @@ if (secret_imgs) {
       image.src = secret_img.src;
       image.style = secret_img.style;
       image.classList.add('secret_img');
+      image.setAttribute('role', 'presentation');
       secrets.appendChild(image);
     }
   } catch {
@@ -29,15 +32,21 @@ if (secret_imgs) {
   secret_imgs = [];
 }
 
-let clear__btn = document.getElementById('clear__btn');;
-clear__btn.addEventListener('click', () => {
-  secrets.innerHTML = '';
+let clear_btn = document.getElementById('clear_btn');;
+clear_btn.addEventListener('click', () => {
+  if (secrets.children.length > 0) {
+    for (let i = 0; i < secrets.children.length; i++) {
+      setTimeout(() => {
+        $(secrets.children[i]).fadeOut(FADE_MS, () => $(secret_img).remove());
+      }, FADE_MS * i * 0.5);
+    }
+  }
   secret_imgs = [];
   localStorage.clear();
 });
 
 const f = new FontFace('Flow Circular', 'url(/fonts/flow-circular.woff)');
-f.load().then(() => write__btn.addEventListener('click', startWriting));
+f.load().then(() => write_btn.addEventListener('click', startWriting));
 
 function startWriting() {
   if (write.children.length === 0) {
@@ -45,19 +54,19 @@ function startWriting() {
     textarea.cols = '50';
     textarea.rows = '20';
 
-    secret__btn = document.createElement('button');
-    secret__btn.type = 'button';
-    secret__btn.classList.add('button');
-    secret__btn.appendChild(document.createTextNode('secretttt'));
-    secret__btn.addEventListener('click', makeSecret);
+    secret_btn = document.createElement('button');
+    secret_btn.type = 'button';
+    secret_btn.classList.add('button');
+    secret_btn.appendChild(document.createTextNode('secretttt'));
+    secret_btn.addEventListener('click', makeSecret);
 
     write.appendChild(textarea);
-    write.appendChild(secret__btn);
+    write.appendChild(secret_btn);
     
     $(textarea).hide();
-    $(secret__btn).hide();
-    $(textarea).fadeIn(500, () => textarea.focus());
-    $(secret__btn).fadeIn(500);
+    $(secret_btn).hide();
+    $(textarea).fadeIn(FADE_MS, () => textarea.focus());
+    $(secret_btn).fadeIn(FADE_MS);
   }
 }
 
@@ -65,13 +74,13 @@ function makeSecret() {
   if (secret.children.length === 0) {
     text = textarea.value;
 
-    $(textarea).fadeOut(500, () => textarea.remove());
-    $(secret__btn).fadeOut(500, () => secret__btn.remove());
+    $(textarea).fadeOut(FADE_MS, () => textarea.remove());
+    $(secret_btn).fadeOut(FADE_MS, () => secret_btn.remove());
 
     canvas = document.createElement('canvas');
     canvas.classList.add('canvas');
     canvas.width = 350;
-    canvas.height = 500;
+    canvas.height = FADE_MS;
     secret.append(canvas);
 
     submit_btn = document.createElement('button');
@@ -83,8 +92,8 @@ function makeSecret() {
 
     $(canvas).hide();
     $(submit_btn).hide();
-    $(canvas).fadeIn(500);
-    $(submit_btn).fadeIn(500);
+    $(canvas).fadeIn(FADE_MS);
+    $(submit_btn).fadeIn(FADE_MS);
 
     secretWordIndex = 0;
     requestAnimationFrame(draw);
@@ -146,18 +155,19 @@ function draw() {
 }
 
 function submitSecret() {
-  $(canvas).fadeOut(500, () => canvas.remove());
-  $(submit_btn).fadeOut(500, () => submit_btn.remove());
+  $(canvas).fadeOut(FADE_MS, () => canvas.remove());
+  $(submit_btn).fadeOut(FADE_MS, () => submit_btn.remove());
 
   let image = new Image();
   image.src = dataURL;
   image.classList.add('secret_img');
+  image.setAttribute('role', 'presentation');
   let scale = Math.random() * 0.5 + 0.25;
   let scaledWidth = Math.floor(canvas.width * scale);
   let scaledHeight = Math.floor(canvas.height * scale);
   let style = `width: ${scaledWidth}px; ` +
-    `top: ${Math.floor(Math.random() * (window.innerHeight - scaledHeight) + scaledHeight)}px; ` +
-    `left: ${Math.floor(Math.random() * (window.innerWidth - scaledWidth) + scaledWidth)}px;`;
+    `top: ${Math.floor(Math.random() * (window.innerHeight - scaledHeight))}px; ` +
+    `left: ${Math.floor(Math.random() * (window.innerWidth - scaledWidth))}px;`;
   image.style = style;
   secrets.appendChild(image);
   secret_imgs.push({
@@ -167,5 +177,5 @@ function submitSecret() {
   localStorage.setItem('secret_imgs', JSON.stringify(secret_imgs));
   
   $(image).hide();
-  $(image).fadeIn(500);
+  $(image).fadeIn(FADE_MS);
 }
