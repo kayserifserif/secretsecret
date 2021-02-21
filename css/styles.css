@@ -58,7 +58,7 @@ textarea {
   margin-top: 2em;
 }
 
-#secrets-container {
+#secrets_container {
   position: absolute;
   top: 0;
   left: 0;
@@ -74,7 +74,7 @@ textarea {
   overflow: hidden;
 }
 
-.secret_img {
+.secret_img_container {
   position: absolute;
   opacity: 0.5;
 }

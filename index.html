@@ -4,13 +4,17 @@
   <meta charset="UTF-8">
   <title>secret secret</title>
   <link rel="stylesheet" type="text/css" href="/css/styles.css">
+  <!-- <link rel="stylesheet" type="text/css" href="/css/peel.css"> -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/TweenLite.min.js"></script>
+  <script src="/js/peel.js"></script>
+  <script src="/js/scripts.js" defer></script>
 </head>
 <body>
   <header>
     <h1 class="title">secret secret</h1>
     <p>
-      <button id="write_btn" type="button" class="button">write in a secret</button>
+      <button id="write_btn" type="button" class="button">write down a secret</button>
       <button id="clear_btn" type="button" class="button">clear secrets</button>
     </p>
   </header>
@@ -18,7 +22,7 @@
     <div id="write"></div>
     <div id="secret"></div>
   </main>
-  <div id="secrets-container">
+  <div id="secrets_container">
     <div id="secrets"></div>
   </div>
   <footer>
@@ -28,6 +32,5 @@
       flow is a typeface by <a href="https://danross.co">dan ross</a> built for experimenting • inspired by <a href="https://www.instagram.com/evelynbiart/">evelyn bi</a> • created by <a href="https://whykatherine.github.io">katherine yang</a>
     </p>
   </footer>
-  <script src="/js/scripts.js"></script>
 </body>
 </html>

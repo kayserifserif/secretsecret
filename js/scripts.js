@@ -11,20 +11,68 @@ let canvas;
 let text;
 let secretWordIndex;
 let dataURL;
+let tweens = [];
+
+function addSecretImg(secret_img) {
+  let peel = document.createElement('div');
+  peel.classList.add('secret_img_container', 'peel');
+  peel.style = 'top: ' + secret_img.style.top +
+    '; left: ' + secret_img.style.left +
+    '; width: ' +secret_img.style.width;
+
+    let peel_top = document.createElement('div');
+    peel_top.classList.add('peel-top');
+      let image = new Image();
+      image.src = secret_img.src;
+      image.style = 'width: ' + secret_img.style.width;
+      image.classList.add('secret_img');
+      image.setAttribute('role', 'presentation');
+      peel_top.appendChild(image);
+    peel.appendChild(peel_top);
+  
+    let peel_back = document.createElement('div');
+    peel_back.classList.add('peel-back');
+    peel.appendChild(peel_back);
+  
+    let peel_bottom = document.createElement('div');
+    peel_bottom.classList.add('peel-bottom');
+    peel.appendChild(peel_bottom);
+
+  secrets.appendChild(peel);
+
+  $(peel).hide()
+  $(peel).fadeIn(FADE_MS);
+
+  let p = new Peel(peel, {
+    corner: Peel.Corners.TOP_LEFT
+  });
+  let width = secret_img.style.width;
+  let x = parseInt(width.substring(0, width.length - 2));
+  let height = secret_img.style.height;
+  let y = parseInt(height.substring(0, height.length - 2));
+  console.log(x, y);
+  p.setPeelPosition(0, 0);
+  // p.setPeelPath(x, y, -x * 2, -y * 2);
+  p.setPeelPath(0, 0, x, y);
+  p.setFadeThreshold(.7);
+  p.t = 0;
+  let tween = new TweenLite(p, 1.5, {
+    t:1,
+    paused:true,
+    ease: Power2.easeIn,
+    onUpdate: function() {
+      p.setTimeAlongPath(this.target.t);
+    },
+  });
+  tweens.push(tween);
+}
 
 const secrets = document.getElementById('secrets');
 let secret_imgs = localStorage.getItem('secret_imgs');
 if (secret_imgs) {
   try {
     secret_imgs = JSON.parse(secret_imgs);
-    for (let secret_img of secret_imgs) {
-      let image = new Image();
-      image.src = secret_img.src;
-      image.style = secret_img.style;
-      image.classList.add('secret_img');
-      image.setAttribute('role', 'presentation');
-      secrets.appendChild(image);
-    }
+    secret_imgs.forEach(secret_img => addSecretImg(secret_img));
   } catch {
     secret_imgs = [];
   }
@@ -36,13 +84,20 @@ let clear_btn = document.getElementById('clear_btn');;
 clear_btn.addEventListener('click', () => {
   if (secrets.children.length > 0) {
     for (let i = 0; i < secrets.children.length; i++) {
+      console.log(tweens[i]);
       setTimeout(() => {
-        $(secrets.children[i]).fadeOut(FADE_MS, () => $(secret_img).remove());
+        tweens[i].seek(0);
+        tweens[i].play();
       }, FADE_MS * i * 0.5);
     }
   }
-  secret_imgs = [];
-  localStorage.clear();
+  setTimeout(() => {
+    secrets.innerHTML = '';
+    tweens = [];
+    secret_imgs = [];
+    localStorage.clear();
+    console.log('cleared');
+  }, FADE_MS * 3 * secrets.children.length);
 });
 
 const f = new FontFace('Flow Circular', 'url(/fonts/flow-circular.woff)');
@@ -113,7 +168,7 @@ function draw() {
     now.getHours().toString().padStart(2, '0') + ':' +
     now.getMinutes().toString().padStart(2, '0');
   ctx.font = '16px serif';
-  ctx.fillText(now_str, padding, 0);
+  ctx.fillText(now_str, 0, 0);
 
   ctx.font = '24px "Flow Circular"';
   let spaceWidth = ctx.measureText(' ').width;
@@ -158,24 +213,19 @@ function submitSecret() {
   $(canvas).fadeOut(FADE_MS, () => canvas.remove());
   $(submit_btn).fadeOut(FADE_MS, () => submit_btn.remove());
 
-  let image = new Image();
-  image.src = dataURL;
-  image.classList.add('secret_img');
-  image.setAttribute('role', 'presentation');
   let scale = Math.random() * 0.5 + 0.25;
   let scaledWidth = Math.floor(canvas.width * scale);
   let scaledHeight = Math.floor(canvas.height * scale);
-  let style = `width: ${scaledWidth}px; ` +
-    `top: ${Math.floor(Math.random() * (window.innerHeight - scaledHeight))}px; ` +
-    `left: ${Math.floor(Math.random() * (window.innerWidth - scaledWidth))}px;`;
-  image.style = style;
-  secrets.appendChild(image);
-  secret_imgs.push({
-    src: image.src,
-    style: style
-  });
+  let secret_img = {
+    src: dataURL,
+    style: {
+      width: `${scaledWidth}px`,
+      height: `${scaledHeight}px`,
+      top: `${Math.floor(Math.random() * (window.innerHeight - scaledHeight))}px`,
+      left: `${Math.floor(Math.random() * (window.innerWidth - scaledWidth))}px`
+    }
+  };
+  secret_imgs.push(secret_img);
+  addSecretImg(secret_img);
   localStorage.setItem('secret_imgs', JSON.stringify(secret_imgs));
-  
-  $(image).hide();
-  $(image).fadeIn(FADE_MS);
 }
