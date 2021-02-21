@@ -1,6 +1,8 @@
-const FADE_MS = 500;
+// variables
 
-const write_btn = document.getElementById('write_btn');
+const FADE_MS = 500;
+const TRANSITION_MS = 20;
+
 const write = document.getElementById('write');
 let textarea;
 
@@ -12,60 +14,56 @@ let text;
 let secretWordIndex;
 let dataURL;
 
-function addSecretImg(secret_img) {
-  let image = new Image();
-  image.src = secret_img.src;
-  image.style = secret_img.style;
-  image.classList.add('secret_img');
-  image.setAttribute('role', 'presentation');
-  secrets.appendChild(image);
-  fadeIn(image);
-}
-
 const secrets = document.getElementById('secrets');
 let secret_imgs = localStorage.getItem('secret_imgs');
-if (secret_imgs) {
+
+
+// setup
+
+document.addEventListener('DOMContentLoaded', () => {
+  // load existing secret images
   try {
     secret_imgs = JSON.parse(secret_imgs);
     secret_imgs.forEach(secret_img => addSecretImg(secret_img));
   } catch {
     secret_imgs = [];
   }
-} else {
-  secret_imgs = [];
-}
 
-let clear_btn = document.getElementById('clear_btn');;
-clear_btn.addEventListener('click', () => {
-  if (secrets.children.length > 0) {
-    for (let i = 0; i < secrets.children.length; i++) {
-      setTimeout(() => {
-        fadeOut(secrets.children[i]);
-      }, FADE_MS * i * 0.5);
-    }
-  }
-  setTimeout(() => {
-    secrets.innerHTML = '';
-    tweens = [];
-    secret_imgs = [];
-    localStorage.clear();
-    console.log('cleared');
-  }, FADE_MS * 3 * secrets.children.length);
+  // clear button
+  document.getElementById('clear_btn').addEventListener('click', clearSecrets);
+
+  // font
+  const f = new FontFace('Flow Circular', 'url(/fonts/flow-circular.woff)');
+  f.load().then(() => document.getElementById('write_btn').addEventListener('click', startWriting));
 });
 
-const f = new FontFace('Flow Circular', 'url(/fonts/flow-circular.woff)');
-f.load().then(() => write_btn.addEventListener('click', startWriting));
 
-// Helpers
+// helpers
 
+/**
+ * Fade to opacity 1.
+ * @param {HTMLElement} el Element to fade in.
+ * @param {Function} fn Callback to execute when faded in.
+ */
 function fadeIn(el, fn) {
   fade(el, fn, 1);
 }
 
+/**
+ * Fade to opacity 0.
+ * @param {HTMLElement} el Element to fade out.
+ * @param {Function} fn Callback to execute when faded out.
+ */
 function fadeOut(el, fn) {
   fade(el, fn, 0);
 }
 
+/**
+ * Helper function for fading in or out.
+ * @param {HTMLElement} el Element to fade in or out.
+ * @param {Function} fn Callback to execute when faded in or out.
+ * @param {number} target Opacity to fade to.
+ */
 function fade(el, fn, target) {
   if (target === 1) {
     el.style.opacity = 0;
@@ -76,9 +74,29 @@ function fade(el, fn, target) {
     if (fn) {
       setTimeout(fn, FADE_MS);
     }
-  }, 20);
+  }, TRANSITION_MS);
 }
 
+
+// functions
+
+/**
+ * Add image of secret to background of page.
+ * @param {Object} secret_img Object containing image source and style.
+ */
+function addSecretImg(secret_img) {
+  let image = new Image();
+  image.src = secret_img.src;
+  image.style = secret_img.style;
+  image.classList.add('secret_img');
+  image.setAttribute('role', 'presentation');
+  secrets.appendChild(image);
+  fadeIn(image);
+}
+
+/**
+ * Create textarea and button to write secret.
+ */
 function startWriting() {
   if (write.children.length === 0) {
     textarea = document.createElement('textarea');
@@ -99,6 +117,9 @@ function startWriting() {
   }
 }
 
+/**
+ * Convert secret text to image.
+ */
 function makeSecret() {
   if (secret.children.length === 0) {
     text = textarea.value;
@@ -127,6 +148,9 @@ function makeSecret() {
   }
 }
 
+/**
+ * Canvas animation of redacting secret text.
+ */
 function draw() {
   let ctx = canvas.getContext('2d');
   ctx.textBaseline = 'top';
@@ -181,6 +205,9 @@ function draw() {
   }
 }
 
+/**
+ * Adds canvas image to the background of the page.
+ */
 function submitSecret() {
   fadeOut(canvas, () => canvas.remove());
   fadeOut(submit_btn, () => submit_btn.remove());
@@ -197,4 +224,19 @@ function submitSecret() {
   secret_imgs.push(secret_img);
   addSecretImg(secret_img);
   localStorage.setItem('secret_imgs', JSON.stringify(secret_imgs));
+}
+
+function clearSecrets() {
+  if (secrets.children.length > 0) {
+    for (let i = 0; i < secrets.children.length; i++) {
+      setTimeout(() => {
+        fadeOut(secrets.children[i]);
+      }, FADE_MS * i * 0.5);
+    }
+  }
+  setTimeout(() => {
+    secrets.innerHTML = '';
+    secret_imgs = [];
+    localStorage.clear();
+  }, FADE_MS * 3 * secrets.children.length);
 }
