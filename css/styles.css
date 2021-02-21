@@ -1,16 +1,10 @@
+/**
+ * COMMON
+ */
+
 @font-face {
   font-family: "Flow Circular";
   src: url("/fonts/flow-circular.woff");
-}
-
-.title {
-  width: max-content;
-}
-
-h1:hover {
-  font-family: "Flow Circular";
-  font-size: 1.6em;
-  line-height: 1.66;
 }
 
 html {
@@ -33,16 +27,41 @@ p:last-child {
   margin-bottom: 0;
 }
 
+/**
+ * HEADER FOOTER
+ */
+
 header,
 footer {
   padding: 2em;
 }
 
+.title {
+  width: max-content;
+}
+
+.title:hover {
+  font-family: "Flow Circular";
+  font-size: 1.6em;
+  line-height: 1.66;
+}
+
+/**
+ * MAIN
+ */
+
 main {
   display: grid;
-  grid-template-columns: 50% 50%;
+  grid-template-columns: 100%;
+  grid-template-rows: auto auto;
   justify-items: center;
 }
+  @media (min-width: 800px) {
+    main {
+      grid-template-columns: 50% 50%;
+      grid-template-rows: auto;
+    }
+  }
 
 .write,
 .secret {
@@ -74,7 +93,7 @@ textarea {
   overflow: hidden;
 }
 
-.secret_img_container {
+.secret_img {
   position: absolute;
   opacity: 0.5;
 }

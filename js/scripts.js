@@ -11,60 +11,17 @@ let canvas;
 let text;
 let secretWordIndex;
 let dataURL;
-let tweens = [];
 
 function addSecretImg(secret_img) {
-  let peel = document.createElement('div');
-  peel.classList.add('secret_img_container', 'peel');
-  peel.style = 'top: ' + secret_img.style.top +
-    '; left: ' + secret_img.style.left +
-    '; width: ' +secret_img.style.width;
+  let image = new Image();
+  image.src = secret_img.src;
+  image.style = secret_img.style;
+  image.classList.add('secret_img');
+  image.setAttribute('role', 'presentation');
+  secrets.appendChild(image);
 
-    let peel_top = document.createElement('div');
-    peel_top.classList.add('peel-top');
-      let image = new Image();
-      image.src = secret_img.src;
-      image.style = 'width: ' + secret_img.style.width;
-      image.classList.add('secret_img');
-      image.setAttribute('role', 'presentation');
-      peel_top.appendChild(image);
-    peel.appendChild(peel_top);
-  
-    let peel_back = document.createElement('div');
-    peel_back.classList.add('peel-back');
-    peel.appendChild(peel_back);
-  
-    let peel_bottom = document.createElement('div');
-    peel_bottom.classList.add('peel-bottom');
-    peel.appendChild(peel_bottom);
-
-  secrets.appendChild(peel);
-
-  $(peel).hide()
-  $(peel).fadeIn(FADE_MS);
-
-  let p = new Peel(peel, {
-    corner: Peel.Corners.TOP_LEFT
-  });
-  let width = secret_img.style.width;
-  let x = parseInt(width.substring(0, width.length - 2));
-  let height = secret_img.style.height;
-  let y = parseInt(height.substring(0, height.length - 2));
-  console.log(x, y);
-  p.setPeelPosition(0, 0);
-  // p.setPeelPath(x, y, -x * 2, -y * 2);
-  p.setPeelPath(0, 0, x, y);
-  p.setFadeThreshold(.7);
-  p.t = 0;
-  let tween = new TweenLite(p, 1.5, {
-    t:1,
-    paused:true,
-    ease: Power2.easeIn,
-    onUpdate: function() {
-      p.setTimeAlongPath(this.target.t);
-    },
-  });
-  tweens.push(tween);
+  $(image).hide()
+  $(image).fadeIn(FADE_MS);
 }
 
 const secrets = document.getElementById('secrets');
@@ -84,10 +41,8 @@ let clear_btn = document.getElementById('clear_btn');;
 clear_btn.addEventListener('click', () => {
   if (secrets.children.length > 0) {
     for (let i = 0; i < secrets.children.length; i++) {
-      console.log(tweens[i]);
       setTimeout(() => {
-        tweens[i].seek(0);
-        tweens[i].play();
+        $(secrets.children[i]).fadeOut(FADE_MS);
       }, FADE_MS * i * 0.5);
     }
   }
@@ -112,7 +67,7 @@ function startWriting() {
     secret_btn = document.createElement('button');
     secret_btn.type = 'button';
     secret_btn.classList.add('button');
-    secret_btn.appendChild(document.createTextNode('secretttt'));
+    secret_btn.appendChild(document.createTextNode('shhh'));
     secret_btn.addEventListener('click', makeSecret);
 
     write.appendChild(textarea);
@@ -141,7 +96,7 @@ function makeSecret() {
     submit_btn = document.createElement('button');
     submit_btn.type = 'button';
     submit_btn.classList.add('button');
-    submit_btn.appendChild(document.createTextNode('submit'));
+    submit_btn.appendChild(document.createTextNode('secretttt'));
     submit_btn.addEventListener('click', submitSecret);
     secret.appendChild(submit_btn);
 
@@ -218,12 +173,9 @@ function submitSecret() {
   let scaledHeight = Math.floor(canvas.height * scale);
   let secret_img = {
     src: dataURL,
-    style: {
-      width: `${scaledWidth}px`,
-      height: `${scaledHeight}px`,
-      top: `${Math.floor(Math.random() * (window.innerHeight - scaledHeight))}px`,
-      left: `${Math.floor(Math.random() * (window.innerWidth - scaledWidth))}px`
-    }
+    style: `width: ${scaledWidth}px; ` +
+      `top: ${Math.floor(Math.random() * (window.innerHeight - scaledHeight))}px; ` +
+      `left: ${Math.floor(Math.random() * (window.innerWidth - scaledWidth))}px;`
   };
   secret_imgs.push(secret_img);
   addSecretImg(secret_img);
