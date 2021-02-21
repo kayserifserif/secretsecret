@@ -19,9 +19,7 @@ function addSecretImg(secret_img) {
   image.classList.add('secret_img');
   image.setAttribute('role', 'presentation');
   secrets.appendChild(image);
-
-  $(image).hide()
-  $(image).fadeIn(FADE_MS);
+  fadeIn(image);
 }
 
 const secrets = document.getElementById('secrets');
@@ -42,7 +40,7 @@ clear_btn.addEventListener('click', () => {
   if (secrets.children.length > 0) {
     for (let i = 0; i < secrets.children.length; i++) {
       setTimeout(() => {
-        $(secrets.children[i]).fadeOut(FADE_MS);
+        fadeOut(secrets.children[i]);
       }, FADE_MS * i * 0.5);
     }
   }
@@ -57,6 +55,29 @@ clear_btn.addEventListener('click', () => {
 
 const f = new FontFace('Flow Circular', 'url(/fonts/flow-circular.woff)');
 f.load().then(() => write_btn.addEventListener('click', startWriting));
+
+// Helpers
+
+function fadeIn(el, fn) {
+  fade(el, fn, 1);
+}
+
+function fadeOut(el, fn) {
+  fade(el, fn, 0);
+}
+
+function fade(el, fn, target) {
+  if (target === 1) {
+    el.style.opacity = 0;
+  }
+  el.style.transition = `${FADE_MS / 1000.0}s opacity`;
+  setTimeout(() => {
+    el.style.opacity = target;
+    if (fn) {
+      setTimeout(fn, FADE_MS);
+    }
+  }, 20);
+}
 
 function startWriting() {
   if (write.children.length === 0) {
@@ -73,10 +94,8 @@ function startWriting() {
     write.appendChild(textarea);
     write.appendChild(secret_btn);
     
-    $(textarea).hide();
-    $(secret_btn).hide();
-    $(textarea).fadeIn(FADE_MS, () => textarea.focus());
-    $(secret_btn).fadeIn(FADE_MS);
+    fadeIn(textarea, () => textarea.focus());
+    fadeIn(secret_btn);
   }
 }
 
@@ -84,8 +103,8 @@ function makeSecret() {
   if (secret.children.length === 0) {
     text = textarea.value;
 
-    $(textarea).fadeOut(FADE_MS, () => textarea.remove());
-    $(secret_btn).fadeOut(FADE_MS, () => secret_btn.remove());
+    fadeOut(textarea, () => textarea.remove());
+    fadeOut(secret_btn, () => secret_btn.remove());
 
     canvas = document.createElement('canvas');
     canvas.classList.add('canvas');
@@ -100,10 +119,8 @@ function makeSecret() {
     submit_btn.addEventListener('click', submitSecret);
     secret.appendChild(submit_btn);
 
-    $(canvas).hide();
-    $(submit_btn).hide();
-    $(canvas).fadeIn(FADE_MS);
-    $(submit_btn).fadeIn(FADE_MS);
+    fadeIn(canvas);
+    fadeIn(submit_btn);
 
     secretWordIndex = 0;
     requestAnimationFrame(draw);
@@ -165,8 +182,8 @@ function draw() {
 }
 
 function submitSecret() {
-  $(canvas).fadeOut(FADE_MS, () => canvas.remove());
-  $(submit_btn).fadeOut(FADE_MS, () => submit_btn.remove());
+  fadeOut(canvas, () => canvas.remove());
+  fadeOut(submit_btn, () => submit_btn.remove());
 
   let scale = Math.random() * 0.5 + 0.25;
   let scaledWidth = Math.floor(canvas.width * scale);
