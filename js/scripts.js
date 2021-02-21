@@ -17,6 +17,7 @@ let dataURL;
 const secrets = document.getElementById('secrets');
 let secret_imgs = localStorage.getItem('secret_imgs');
 
+const f = new FontFace('Flow Circular', 'url(/fonts/flow-circular.woff)');
 
 // setup
 
@@ -33,7 +34,6 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('clear_btn').addEventListener('click', clearSecrets);
 
   // font
-  const f = new FontFace('Flow Circular', 'url(/fonts/flow-circular.woff)');
   f.load().then(() => document.getElementById('write_btn').addEventListener('click', startWriting));
 });
 
