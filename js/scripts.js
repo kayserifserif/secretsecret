@@ -41,31 +41,13 @@ document.addEventListener('DOMContentLoaded', () => {
 // helpers
 
 /**
- * Fade to opacity 1.
- * @param {HTMLElement} el Element to fade in.
- * @param {Function} fn Callback to execute when faded in.
- */
-function fadeIn(el, fn) {
-  fade(el, fn, 1);
-}
-
-/**
- * Fade to opacity 0.
- * @param {HTMLElement} el Element to fade out.
- * @param {Function} fn Callback to execute when faded out.
- */
-function fadeOut(el, fn) {
-  fade(el, fn, 0);
-}
-
-/**
- * Helper function for fading in or out.
- * @param {HTMLElement} el Element to fade in or out.
- * @param {Function} fn Callback to execute when faded in or out.
+ * Fade element to target opacity.
+ * @param {HTMLElement} el Element to fade.
  * @param {number} target Opacity to fade to.
+ * @param {Function} fn Callback to execute when faded.
  */
-function fade(el, fn, target) {
-  if (target === 1) {
+function fade(el, target, fn) {
+  if (target > 0) {
     el.style.opacity = 0;
   }
   el.style.transition = `${FADE_MS / 1000.0}s opacity`;
@@ -91,7 +73,7 @@ function addSecretImg(secret_img) {
   image.classList.add('secret_img');
   image.setAttribute('role', 'presentation');
   secrets.appendChild(image);
-  fadeIn(image);
+  fade(image, 0.5);
 }
 
 /**
@@ -112,8 +94,8 @@ function startWriting() {
     write.appendChild(textarea);
     write.appendChild(secret_btn);
     
-    fadeIn(textarea, () => textarea.focus());
-    fadeIn(secret_btn);
+    fade(textarea, 1, () => textarea.focus());
+    fade(secret_btn, 1);
   }
 }
 
@@ -124,8 +106,8 @@ function makeSecret() {
   if (secret.children.length === 0) {
     text = textarea.value;
 
-    fadeOut(textarea, () => textarea.remove());
-    fadeOut(secret_btn, () => secret_btn.remove());
+    fade(textarea, 0, () => textarea.remove());
+    fade(secret_btn, 0, () => secret_btn.remove());
 
     canvas = document.createElement('canvas');
     canvas.classList.add('canvas');
@@ -140,8 +122,8 @@ function makeSecret() {
     submit_btn.addEventListener('click', submitSecret);
     secret.appendChild(submit_btn);
 
-    fadeIn(canvas);
-    fadeIn(submit_btn);
+    fade(canvas, 1);
+    fade(submit_btn, 1);
 
     secretWordIndex = 0;
     requestAnimationFrame(draw);
@@ -209,8 +191,8 @@ function draw() {
  * Adds canvas image to the background of the page.
  */
 function submitSecret() {
-  fadeOut(canvas, () => canvas.remove());
-  fadeOut(submit_btn, () => submit_btn.remove());
+  fade(canvas, 0, () => canvas.remove());
+  fade(submit_btn, 0, () => submit_btn.remove());
 
   let scale = Math.random() * 0.5 + 0.25;
   let scaledWidth = Math.floor(canvas.width * scale);
@@ -226,11 +208,14 @@ function submitSecret() {
   localStorage.setItem('secret_imgs', JSON.stringify(secret_imgs));
 }
 
+/**
+ * Clear secrets from background and local storage.
+ */
 function clearSecrets() {
   if (secrets.children.length > 0) {
     for (let i = 0; i < secrets.children.length; i++) {
       setTimeout(() => {
-        fadeOut(secrets.children[i]);
+        fade(secrets.children[i], 0);
       }, FADE_MS * i * 0.5);
     }
   }
