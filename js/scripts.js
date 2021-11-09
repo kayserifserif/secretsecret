@@ -2,6 +2,7 @@
 
 const FADE_MS = 500;
 const TRANSITION_MS = 20;
+const REDACT_MS = 50;
 
 const write = document.getElementById('write');
 let textarea;
@@ -176,7 +177,8 @@ function draw() {
 
   if (secretWordIndex < wordIndex) {
     secretWordIndex += 1;
-    requestAnimationFrame(draw);
+    setTimeout(() => requestAnimationFrame(draw), REDACT_MS);
+    // requestAnimationFrame(draw);
   } else {
     let cropCanvas = document.createElement('canvas');
     cropCanvas.width = canvas.width;
