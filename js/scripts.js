@@ -146,7 +146,8 @@ function draw() {
     now.getMonth().toString().padStart(2, '0') + ' ' +
     now.getHours().toString().padStart(2, '0') + ':' +
     now.getMinutes().toString().padStart(2, '0');
-  ctx.font = '16px serif';
+  // ctx.font = '16px serif';
+  ctx.font = '16px -apple-system';
   ctx.fillText(now_str, 0, 0);
 
   ctx.font = '24px "Flow Circular"';
@@ -162,7 +163,8 @@ function draw() {
       if (wordIndex <= secretWordIndex) {
         ctx.font = '24px "Flow Circular"';
       } else {
-        ctx.font = '24px serif';
+        // ctx.font = '24px serif';
+        ctx.font = '24px -apple-system';
       }
       let wordWidth = ctx.measureText(word).width;
       if (x + wordWidth + spaceWidth > canvas.width - padding) {
