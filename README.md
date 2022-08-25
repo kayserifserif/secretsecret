@@ -1,6 +1,6 @@
 # secretsecret
 
-a interface for telling (and eventually sharing) redacted secrets
+an interface for telling (and eventually sharing) redacted secrets
 
 font: [flow](https://danross.co/flow/) by dan ross
 
