@@ -1,0 +1,100 @@
+/**
+ * COMMON
+ */
+
+@font-face {
+  font-family: "Flow Circular";
+  src: url("/fonts/flow-circular.woff");
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+h1,
+p:first-child {
+  margin-top: 0;
+}
+
+p:last-child {
+  margin-bottom: 0;
+}
+
+/**
+ * HEADER FOOTER
+ */
+
+header,
+footer {
+  padding: 2em;
+}
+
+.title {
+  width: max-content;
+}
+
+.title:hover {
+  font-family: "Flow Circular";
+  font-size: 1.6em;
+  line-height: 1.66;
+}
+
+/**
+ * MAIN
+ */
+
+main {
+  display: grid;
+  grid-template-columns: 100%;
+  grid-template-rows: auto auto;
+  justify-items: center;
+}
+  @media (min-width: 800px) {
+    main {
+      grid-template-columns: 50% 50%;
+      grid-template-rows: auto;
+    }
+  }
+
+.write,
+.secret {
+  padding: 5em;
+}
+
+textarea {
+  display: block;
+}
+
+.canvas {
+  display: block;
+  margin-top: 2em;
+}
+
+#secrets_container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+}
+
+#secrets {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.secret_img {
+  position: absolute;
+  opacity: 0.5;
+}
