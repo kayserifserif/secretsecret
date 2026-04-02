@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
-import { createClient } from '@supabase/supabase-js'
+const s = require('@supabase/supabase-js');
+const createClient = s.createClient;
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
